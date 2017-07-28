@@ -1,5 +1,12 @@
 BIN = opus2pcm
-CFLAGS = -Os -pedantic -std=c89 -Wall -Wextra
+
+MUSLDIR = /usr/local/musl
+TCCDIR = /usr/local/lib/tcc
+INC = -I$(MUSLDIR)/include
+CRT = $(MUSLDIR)/lib/crt1.o $(MUSLDIR)/lib/libc.a $(TCCDIR)/libtcc1.a
+
+CC = pcc
+CFLAGS = -Os -pedantic -std=c89 -Wall -Wextra $(INC)
 
 all: options $(BIN)
 
@@ -9,8 +16,8 @@ options:
 	@echo "LD     = $(LD)"
 
 $(BIN): $(BIN:=.o)
-	@echo "CC -o $@"
-	@$(CC) -o $@ $@.o
+	@echo "LD $@"
+	@$(LD) -o $@ $@.o $(CRT)
 
 .c.o:
 	@echo "CC $<"
