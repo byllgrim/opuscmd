@@ -6,8 +6,8 @@ Some ogg/opus commands
     libopus
 
 # soft dependencies
-    pcc
+    pcc (may use BYACC and REFLEX to compile this, or just use tcc)
     tcc
-    ld
+    ld (TODO which ld? gnu works)
     musl
     (You can modify Makefile to use gcc quite easily)
