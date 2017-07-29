@@ -1,4 +1,4 @@
-BIN = opus2pcm
+BIN = opus2pcm ogginspect
 
 MUSLDIR = /usr/local/musl
 TCCDIR = /usr/local/lib/tcc
