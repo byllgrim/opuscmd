@@ -17,7 +17,7 @@ struct __attribute__((__packed__)) ogg_header {
 	uint8_t page_segments;
 };
 
-void
+static void
 die(char *msg)
 {
 	fprintf(stderr, msg);
@@ -25,7 +25,7 @@ die(char *msg)
 	/* TODO don't use escape ropes */
 }
 
-void
+static void
 read_segment_table(int fd, uint8_t n)
 {
 	size_t i;
@@ -40,7 +40,7 @@ read_segment_table(int fd, uint8_t n)
 	/* TODO inspect individual segments? */
 }
 
-void
+static void
 print_ogg_header(struct ogg_header *oh)
 {
 	/* TODO assuming valid header? */
@@ -55,7 +55,6 @@ print_ogg_header(struct ogg_header *oh)
 	printf("CRC:      0x%08X\n", oh->CRC_checksum);
 	printf("segments: %d\n", oh->page_segments);
 }
-
 
 int
 main(void)
