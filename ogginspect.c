@@ -22,6 +22,7 @@ die(char *msg)
 {
 	fprintf(stderr, msg);
 	exit(EXIT_FAILURE);
+	/* TODO don't use escape ropes */
 }
 
 void
@@ -39,6 +40,23 @@ read_segment_table(int fd, uint8_t n)
 	/* TODO inspect individual segments? */
 }
 
+void
+print_ogg_header(struct ogg_header *oh)
+{
+	/* TODO assuming valid header? */
+	/* TODO endianness */
+
+	printf("magic:    %s\n", oh->capture_pattern);
+	printf("version:  %d\n", oh->version);
+	printf("type:     %d\n", oh->header_type); /* TODO text descr */
+	printf("granule:  %d\n", oh->granule_position);
+	printf("serial:   0x%08X\n", oh->bitstream_serial_number);
+	printf("sequence: %d\n", oh->page_sequence_number);
+	printf("CRC:      0x%08X\n", oh->CRC_checksum);
+	printf("segments: %d\n", oh->page_segments);
+}
+
+
 int
 main(void)
 {
@@ -48,14 +66,15 @@ main(void)
 		if (strncmp(oh.capture_pattern, "OggS", 4))
 			die("error: invalid ogg header\n");
 
-		printf("pattern = %s\n", oh.capture_pattern);
-		printf("type = %d\n", oh.header_type);
-		printf("segments = %d\n", oh.page_segments);
+		/* TODO verify checksum? */
+
+		print_ogg_header(&oh);
 
 		read_segment_table(STDIN_FILENO, oh.page_segments);
-		// TODO return error codes
+		/* TODO check return error codes? */
+		/* TODO print segment content? */
 
-		printf("\n");
+		printf("\n"); /* TODO puts? */
 	}
 
 	return EXIT_SUCCESS;
