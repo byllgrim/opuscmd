@@ -35,6 +35,8 @@ read_segment_table(int fd, uint8_t n)
 
 	for (i = 0; i < n; i++)
 		read(fd, buf, size[i]); /* TODO check return value */
+
+	/* TODO inspect individual segments? */
 }
 
 int
@@ -46,14 +48,14 @@ main(void)
 		if (strncmp(oh.capture_pattern, "OggS", 4))
 			die("error: invalid ogg header\n");
 
-		fprintf(stderr, "pattern = %s\n", oh.capture_pattern);
-		fprintf(stderr, "type = %d\n", oh.header_type);
-		fprintf(stderr, "segments = %d\n", oh.page_segments);
+		printf("pattern = %s\n", oh.capture_pattern);
+		printf("type = %d\n", oh.header_type);
+		printf("segments = %d\n", oh.page_segments);
 
 		read_segment_table(STDIN_FILENO, oh.page_segments);
 		// TODO return error codes
 
-		fprintf(stderr, "\n");
+		printf("\n");
 	}
 
 	return EXIT_SUCCESS;
