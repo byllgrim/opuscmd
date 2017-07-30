@@ -28,23 +28,13 @@ void
 read_segment_table(int fd, uint8_t n)
 {
 	size_t i;
-	uint8_t size;
-	uint8_t data[0xFF]; /* TODO better denotion of uint8_t maxval */
+	uint8_t size[0xFF];
+	uint8_t buf[0xFF];
 
-	for (i = 0; i < n; i++) {
-		fprintf(stderr, "segment %d\n", i);
-		read(fd, &size, sizeof(size));
-		fprintf(stderr, "\tsize = %d = 0x%02X\n", size, size);
+	read(fd, size, n);
 
-		/* TODO assert size <= sizeof(data) */
-		if (read(fd, data, size) != size)
-			die("error: segment size mismatch");
-
-		fprintf(stderr,
-		        "\tbytes = 0x%02X 0x%02X 0x%02X ...\n",
-		        data[0], data[1], data[2]);
-	}
-
+	for (i = 0; i < n; i++)
+		read(fd, buf, size[i]); /* TODO check return value */
 }
 
 int
