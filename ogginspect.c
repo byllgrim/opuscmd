@@ -1,6 +1,7 @@
-#include <alloca.h> /* TODO don't use alloca */
+/* this is based on the specs in RFC 3533 */
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -17,18 +18,33 @@ struct __attribute__((__packed__)) ogg_header {
 };
 
 void
-read_segment_table(int fd)
+die(char *msg)
 {
+	fprintf(stderr, msg);
+	exit(EXIT_FAILURE);
+}
+
+void
+read_segment_table(int fd, uint8_t n)
+{
+	size_t i;
 	uint8_t size;
-	uint8_t *data;
+	uint8_t data[0xFF]; /* TODO better denotion of uint8_t maxval */
 
-	/* TODO don't assume just 1 segment */
+	for (i = 0; i < n; i++) {
+		fprintf(stderr, "segment %d\n", i);
+		read(fd, &size, sizeof(size));
+		fprintf(stderr, "\tsize = %d = 0x%02X\n", size, size);
 
-	read(fd, &size, sizeof(size));
-	data = alloca(size);
-	read(fd, data, size);
+		/* TODO assert size <= sizeof(data) */
+		if (read(fd, data, size) != size)
+			die("error: segment size mismatch");
 
-	printf("segment size = %d\n", size + 1); /* + 1 for size byte */
+		fprintf(stderr,
+		        "\tbytes = 0x%02X 0x%02X 0x%02X ...\n",
+		        data[0], data[1], data[2]);
+	}
+
 }
 
 int
@@ -37,14 +53,18 @@ main(void)
 	struct ogg_header oh;
 
 	while (read(STDIN_FILENO, &oh, sizeof(oh))) {
-		printf("valid pattern = %d\n",
-		       !strncmp(oh.capture_pattern, "OggS", 4));
-		//printf("pattern = %s\n", oh.capture_pattern);
-		printf("type = %d\n", oh.header_type);
-		printf("segments = %d\n", oh.page_segments);
+		if (strncmp(oh.capture_pattern, "OggS", 4))
+			die("error: invalid ogg header\n");
 
-		read_segment_table(STDIN_FILENO); // TODO return error codes
+		fprintf(stderr, "pattern = %s\n", oh.capture_pattern);
+		fprintf(stderr, "type = %d\n", oh.header_type);
+		fprintf(stderr, "segments = %d\n", oh.page_segments);
+
+		read_segment_table(STDIN_FILENO, oh.page_segments);
+		// TODO return error codes
+
+		fprintf(stderr, "\n");
 	}
 
-	return 0;
+	return EXIT_SUCCESS;
 }
