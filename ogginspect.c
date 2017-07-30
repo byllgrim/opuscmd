@@ -7,7 +7,7 @@
 
 /* TODO put in shared .h file */
 struct __attribute__((__packed__)) ogg_header {
-	uint8_t capture_pattern[4]; /* TODO make char? */
+	char capture_pattern[4]; /* TODO assuming 8bit char? */
 	uint8_t version;
 	uint8_t header_type;
 	uint64_t granule_position;
