@@ -2,11 +2,13 @@ BIN = opus2pcm ogginspect
 
 MUSLDIR = /usr/local/musl
 TCCDIR = /usr/local/lib/tcc
-INC = -I$(MUSLDIR)/include
 CRT = $(MUSLDIR)/lib/crt1.o $(MUSLDIR)/lib/libc.a $(TCCDIR)/libtcc1.a
 
 CC = pcc
+INC = -I$(MUSLDIR)/include -I/usr/local/include
 CFLAGS = -Os -pedantic -std=c89 -Wall -Wextra $(INC)
+LIB = -logg
+LDFLAGS = -static $(LIB)
 
 all: options $(BIN)
 
@@ -17,7 +19,7 @@ options:
 
 $(BIN): $(BIN:=.o)
 	@echo "LD $@"
-	@$(LD) -o $@ $@.o $(CRT)
+	@$(LD) -o $@ $@.o $(LDFLAGS) $(CRT)
 
 .c.o:
 	@echo "CC $<"
