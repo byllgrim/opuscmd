@@ -5,7 +5,7 @@ CRT = $(MUSLDIR)/lib/crt1.o $(MUSLDIR)/lib/libc.a $(TCCDIR)/libtcc1.a
 CC = pcc
 INC = -I$(MUSLDIR)/include -I/usr/local/include
 CFLAGS = -Os -pedantic -std=c89 -Wall -Wextra $(INC)
-LIB = -logg
+LIB = -logg -lopus
 LDFLAGS = -static $(LIB)
 
 PREFIX = /usr/local

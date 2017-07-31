@@ -3,6 +3,11 @@
 #include <stdio.h> /* TODO shouldn't be needed */
 #include <unistd.h>
 
+enum {
+	SAMPLE_RATE = 48000, /* TODO 16000 */
+	CHANNELS = 2,
+};
+
 static int
 read2buf(ogg_sync_state *oy, size_t size)
 {
@@ -24,8 +29,12 @@ main(void)
 	size_t i;
 	int pageout;
 	char running;
+	OpusDecoder *st;
+	int err;
 
 	ogg_sync_init(&oy); /* TODO {0} instead */
+	opus_decoder_create(SAMPLE_RATE, CHANNELS, &err);
+	/* TODO check returns */
 
 	running = 1;
 	pageout = 0;
@@ -35,12 +44,17 @@ main(void)
 
 		pageout = ogg_sync_pageout(&oy, &og);
 
-		if (pageout) { /* TODO == 1? */
-			for (i = 0; i < 4; i++)
-				putchar(og.header[i]);
-			printf(" %d\n", ogg_page_pageno(&og));
+		if (pageout) { /* TODO && granule TODO == 1? */
+			/* TODO refactor */
+
+			/*
+			opus_decode(st,
+			            og.body,
+			            og.body_len,
+			*/
 		}
 	}
 
+	/* TODO opus_decoder_destroy etc */
 	return 0;
 }
