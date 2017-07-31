@@ -1,5 +1,3 @@
-BIN = opus2pcm ogginspect
-
 MUSLDIR = /usr/local/musl
 TCCDIR = /usr/local/lib/tcc
 CRT = $(MUSLDIR)/lib/crt1.o $(MUSLDIR)/lib/libc.a $(TCCDIR)/libtcc1.a
@@ -9,6 +7,10 @@ INC = -I$(MUSLDIR)/include -I/usr/local/include
 CFLAGS = -Os -pedantic -std=c89 -Wall -Wextra $(INC)
 LIB = -logg
 LDFLAGS = -static $(LIB)
+
+PREFIX = /usr/local
+
+BIN = opus2pcm ogginspect
 
 all: options $(BIN)
 
@@ -27,3 +29,8 @@ $(BIN): $(BIN:=.o)
 
 clean:
 	rm -f $(BIN) $(BIN:=.o)
+
+install:
+	mkdir -p $(DESTDIR)$(PREFIX)/bin
+	cp -f $(BIN)  "$(DESTDIR)$(PREFIX)/bin"
+	chmod 755 $(BIN)
